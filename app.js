@@ -1,65 +1,95 @@
 const express = require('express');
 const multer = require('multer');
-const moongoose = require('mongoose'); 
-const env = require('dotenv').config();
+const mongoose = require('mongoose');
+const cors = require('cors');
+const fs = require('fs');
+require('dotenv').config();
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
+// ===== MIDDLEWARE =====
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
-moongoose.connect('mongodb+srv://admin:frmoC7ynruZdIARX@cluster0.zqs7qjl.mongodb.net/?appName=Cluster0',)
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('Could not connect to MongoDB...', err));
+// Папка для картинок
+if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
 
-  Schema = moongoose.Schema;
-const productSchema = new Schema({
-name:{ type: String, required: true },
-price: { type: Number, required: true },
-category: { type: String, required: true },
-description: { type: String, required: true },
+// ===== MULTER =====
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads'),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
-const Product = moongoose.model('Product', productSchema);
+const upload = multer({ storage });
 
-app.post('/createProduct', async (req, res) => {
-  try {
-    const newProduct = new Product(req.body);
-    const savedProduct = await newProduct.save();
-    res.status(201).json({message: 'Product created successfully', product: savedProduct });
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating product', error: error.message });
-  }
-});
+// ===== MONGODB =====
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ База підключена. API готове до магії.'))
+    .catch(err => console.error('❌ Помилка БД:', err));
 
-app.delete('/deleteProduct/:id', async (req, res) => {
-  try {
-    const {id} = req.params;
-    await Product.findByIdAndDelete(id);
-    res.json({ message: 'Product deleted successfully' });
-  } catch (error) { 
-    res.status(500).json({ message: 'Error deleting product', error: error.message });
-  }
-});
+// ===== SCHEMA =====
+const Product = mongoose.model('Product', new mongoose.Schema({
+    name: String,
+    price: Number,
+    category: String,
+    description: String,
+    imageUrl: String
+}, { timestamps: true }));
 
-app.put('/updateProduct/:id', async (req, res) => {
-  try {
-    const {id} = req.params;
-    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
-    res.json({ message: 'Product updated successfully', product: updatedProduct });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating product', error: error.message });
-  }
+// ==========================================
+// ===== ⚪️ ЧИСТІ СТОРІНКИ (БІЛИЙ ЕКРАН) =====
+// ==========================================
+
+// Головна — просто пуста сторінка
+app.get('/', (req, res) => {
+    res.send('<!DOCTYPE html><html><head><title>Shop</title></head><body></body></html>');
 });
 
-app.get('/all-Product', async (req, res) => {
-  try {
-    const allProducts = await Product.find();
-    res.json({ products: allProducts });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching products', error: error.message});
-  }
+// Адмінка — теж чистий білий лист для фронтендщика
+app.get('/admin', (req, res) => {
+    res.send('<!DOCTYPE html><html><head><title>Admin Panel</title></head><body style="background:white;"></body></html>');
 });
 
+// ==========================================
+// ===== 🔥 ПОВНИЙ НАБІР ЕНДПОЇНТІВ =====
+// ==========================================
 
+// Отримати все
+app.get('/api/products', async (req, res) => {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+});
+
+// Створити
+app.post('/api/products', upload.single('image'), async (req, res) => {
+    const product = await Product.create({
+        name: req.body.name,
+        price: req.body.price,
+        category: req.body.category,
+        description: req.body.description,
+        imageUrl: req.file ? `/uploads/${req.file.filename}` : ''
+    });
+    res.status(201).json(product);
+});
+
+// Редагувати (тепер він зможе це зробити в адмінці)
+app.put('/api/products/:id', upload.single('image'), async (req, res) => {
+    const updateData = { ...req.body };
+    if (req.file) updateData.imageUrl = `/uploads/${req.file.filename}`;
+    const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.json(updated);
+});
+
+// Видалити
+app.delete('/api/products/:id', async (req, res) => {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+});
+
+// ===== ЗАПУСК =====
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`🚀 Сервер: http://localhost:${port}`);
+    console.log(`⚪️ Чиста адмінка: http://localhost:${port}/admin`);
 });
