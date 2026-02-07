@@ -58,7 +58,7 @@ app.get('/api/products', async (req, res) => {
     res.json(products);
 });
 
-// Створити
+
 app.post('/api/products', upload.single('image'), async (req, res) => {
     const product = await Product.create({
         name: req.body.name,
@@ -70,7 +70,7 @@ app.post('/api/products', upload.single('image'), async (req, res) => {
     res.status(201).json(product);
 });
 
-// Редагувати (тепер він зможе це зробити в адмінці)
+
 app.put('/api/products/:id', upload.single('image'), async (req, res) => {
     const updateData = { ...req.body };
     if (req.file) updateData.imageUrl = `/uploads/${req.file.filename}`;
@@ -78,7 +78,7 @@ app.put('/api/products/:id', upload.single('image'), async (req, res) => {
     res.json(updated);
 });
 
-// Видалити
+
 app.delete('/api/products/:id', async (req, res) => {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ success: true });
@@ -87,5 +87,5 @@ app.delete('/api/products/:id', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`🚀 Сервер: http://localhost:${port}`);
-    console.log(`⚪️ Чиста адмінка: http://localhost:${port}/admin`);
+    console.log(` http://localhost:${port}/admin`);
 });
