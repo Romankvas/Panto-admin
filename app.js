@@ -26,7 +26,7 @@ const upload = multer({ storage });
 
 
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('✅ База підключена. API готове до магії.'))
+    .then(() => console.log('✅ База підключена.'))
     .catch(err => console.error('❌ Помилка БД:', err));
 
 
