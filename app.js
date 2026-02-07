@@ -8,28 +8,28 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ===== MIDDLEWARE =====
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
-// Папка для картинок
+
 if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
 
-// ===== MULTER =====
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'uploads'),
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
 
-// ===== MONGODB =====
+
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ База підключена. API готове до магії.'))
     .catch(err => console.error('❌ Помилка БД:', err));
 
-// ===== SCHEMA =====
+
 const Product = mongoose.model('Product', new mongoose.Schema({
     name: String,
     price: Number,
@@ -38,25 +38,21 @@ const Product = mongoose.model('Product', new mongoose.Schema({
     imageUrl: String
 }, { timestamps: true }));
 
-// ==========================================
-// ===== ⚪️ ЧИСТІ СТОРІНКИ (БІЛИЙ ЕКРАН) =====
-// ==========================================
 
-// Головна — просто пуста сторінка
+
+
 app.get('/', (req, res) => {
     res.send('<!DOCTYPE html><html><head><title>Shop</title></head><body></body></html>');
 });
 
-// Адмінка — теж чистий білий лист для фронтендщика
+
 app.get('/admin', (req, res) => {
     res.send('<!DOCTYPE html><html><head><title>Admin Panel</title></head><body style="background:white;"></body></html>');
 });
 
-// ==========================================
-// ===== 🔥 ПОВНИЙ НАБІР ЕНДПОЇНТІВ =====
-// ==========================================
 
-// Отримати все
+
+
 app.get('/api/products', async (req, res) => {
     const products = await Product.find().sort({ createdAt: -1 });
     res.json(products);
@@ -88,7 +84,7 @@ app.delete('/api/products/:id', async (req, res) => {
     res.json({ success: true });
 });
 
-// ===== ЗАПУСК =====
+
 app.listen(port, () => {
     console.log(`🚀 Сервер: http://localhost:${port}`);
     console.log(`⚪️ Чиста адмінка: http://localhost:${port}/admin`);
