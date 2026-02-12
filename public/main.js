@@ -22,8 +22,21 @@
        <p>${el.name}</p>
        <p>${el.price}</p>
        <p>${el.category}</p>
-       <div class="confrim"> <button class="edit" id="${el.id}">edit</button></div>
+       <div class="confirm"> <button class="edit" id="${el._id}">edit</button> <button class="delete" id="${el._id}">delete</button></div>
        </div>
        `)
+       
    }
 })
+$(document).on("click", ".delete", function() {
+
+    if (confirm('Ви впевнені, що хочете видалити товар?')) {
+
+        axios.delete(`http://localhost:3000/api/products/${this.id}`)
+        .then(() => {
+            $(this).closest('.product').remove(); 
+        })
+        .catch(err => console.log(err));
+
+    }
+});

@@ -156,7 +156,7 @@ select {
   display: flex;
   flex-direction: column;      
   width: 250px;
-
+ align-items: flex-start;
   padding: 15px;
   border-radius: 12px;
   background: #ffffff;
@@ -197,6 +197,11 @@ select {
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  width: 250px;
+ align-items: center;
+ justify-content: flex-end;
+
+
 }
 
 .edit {
@@ -211,6 +216,20 @@ select {
 
 .edit:hover {
   background: #2980b9;
+}
+.delete{
+    margin: 15px;
+    margin-right: 30px;
+     padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #ec3a3a;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s; 
+}
+.delete:hover {
+  background: #c01a1a;
 }
 
 

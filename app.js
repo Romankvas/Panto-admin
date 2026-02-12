@@ -65,6 +65,7 @@ app.post('/api/products', upload.single('image'), async (req, res) => {
         price: req.body.price,
         category: req.body.category,
         description: req.body.description,
+    
         imageUrl: req.file ? `/uploads/${req.file.filename}` : ''
     });
     res.status(201).json(product);
@@ -86,6 +87,10 @@ app.delete('/api/products/:id', async (req, res) => {
 app.get('/products/:id', async (req, res) => {
     const product = await Product.findById(req.params.id);
     res.json(product);
+});
+app.get('/api/categories', async (req, res) => {
+    const categories = await Product.distinct('category');
+    res.json(categories);
 });
 
 
