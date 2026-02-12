@@ -1,4 +1,35 @@
- $('#create').click(() => {
+$(document).ready(function(){
+ axios.get('http://localhost:3000/api/categories')
+ .then(response=>{
+     let categories = response.data
+      for (let i = 0; i < categories.length; i++){
+        $('#category').append(`<option value="${categories[i]}">${categories[i]}</option>`)
+      }
+       $('#category').append(`<option value="custom">+ Додати свою</option>`);
+ })
+
+
+
+})
+$('#category').on('change', function() {
+    if ($(this).val() === 'custom') {
+        let newCategory = prompt('Введіть нову категорію:');
+        if (newCategory) {
+            $('#category').append(
+                `<option value="${newCategory}" selected>${newCategory}</option>`
+            );
+        }
+    }
+});
+$('.adminChoose').on('click', function() {
+    $('.adminChoose').removeClass('active');
+    $(this).addClass('active');
+});
+
+
+
+
+$('#create').click(() => {
      let data = {
          name: $('#name').val(),
          price: $('#price').val(),
@@ -6,6 +37,9 @@
      };
      console.log(data);
      axios.post('http://localhost:3000/api/products', data)
+       $('#name').val('')
+       $('#price').val('')
+       alert('було успішно додано')
          .then(res => {
              console.log(res.data)
          })
