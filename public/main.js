@@ -18,9 +18,11 @@
    for(let el of res.data){
        $('.redactContainer').append(`
        <div class="product">
+       <div class="productImage"></div>
        <p>${el.name}</p>
        <p>${el.price}</p>
        <p>${el.category}</p>
+       <div class="confrim"> <button class="edit" id="${el.id}">edit</button></div>
        </div>
        `)
    }

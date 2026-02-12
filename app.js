@@ -83,6 +83,10 @@ app.delete('/api/products/:id', async (req, res) => {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ success: true });
 });
+app.get('/products/:id', async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    res.json(product);
+});
 
 
 app.listen(port, () => {
