@@ -72,7 +72,7 @@ app.post('/api/products', upload.single('image'), async (req, res) => {
 });
 
 
-app.put('/api/products/:id', upload.single('image'), async (req, res) => {
+app.put('/api/redactProducts/:id', upload.single('image'), async (req, res) => {
     const updateData = { ...req.body };
     if (req.file) updateData.imageUrl = `/uploads/${req.file.filename}`;
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -84,7 +84,7 @@ app.delete('/api/products/:id', async (req, res) => {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ success: true });
 });
-app.get('/products/:id', async (req, res) => {
+app.get('/api/editproducts/:id', async (req, res) => {
     const product = await Product.findById(req.params.id);
     res.json(product);
 });

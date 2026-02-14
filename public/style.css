@@ -280,5 +280,55 @@ select {
         width: 100%;
     }
 }
+.fullEdit{
+      width: 220px;
+    height: 55px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #45c039, #48a548);
+    border: none;
+    color: white;
+    margin-top: 25px;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.fullEdit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(114, 240, 102, 0.4);
+}
+
+.fullEdit:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+.closeEdit{
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background-color: rgb(248, 47, 47);
+    color: white;
+    font-size: 30px;
+    border: none;
+    margin-bottom: -20px;
+    margin-left: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closeEdit:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(250, 67, 67, 0.4);
+}
+.closeEdit:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+.row{
+    width: 100%;
+    display: flex;
+    align-items: center;
+  
+}
 
 

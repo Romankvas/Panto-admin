@@ -74,3 +74,25 @@ $(document).on("click", ".delete", function() {
 
     }
 });
+$(document).on("click", ".edit", function() {
+    axios.get(`http://localhost:3000/api/editproducts/${this.id}`)
+        .then(response => {
+             $('#price').val(response.data.price)
+             $('#category').val(response.data.category)
+              $('#name').val(response.data.name)
+              $('#create').css('display','none')
+              $('.addContainer').append(`<div class="row"><button class="fullEdit" id="${this.id}">edit</button><button class="closeEdit"><i class="fa-solid fa-xmark"></i></button></div>`)
+        })
+        .catch(err => console.log(err));
+});
+$(document).on("click", ".closeEdit", function() {
+    $('#create').css('display','')
+    $('.row').remove()
+       $('#name').val('')
+       $('#price').val('')
+});
+$(document).on("click",".fullEdit" ,function(){
+         $('#name').val('')
+       $('#price').val('')
+       axios.post('http://localhost:3000/api/redactProducts/:id')
+})
