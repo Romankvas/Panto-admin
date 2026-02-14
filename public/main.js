@@ -91,8 +91,40 @@ $(document).on("click", ".closeEdit", function() {
        $('#name').val('')
        $('#price').val('')
 });
-$(document).on("click",".fullEdit" ,function(){
-         $('#name').val('')
-       $('#price').val('')
-       axios.post('http://localhost:3000/api/redactProducts/:id')
+$(document).on("click", ".fullEdit", function() {
+    const id = this.id;
+
+    axios.put(`http://localhost:3000/api/products/${id}`, {
+        name: $('#name').val(),
+        price: $('#price').val(),
+        category: $('#category').val()
+    })
+    .then(res => {
+        console.log(res.data);
+     
+      
+        $('#name').val('');
+        $('#price').val('');
+         $('.row').remove()
+         $('#create').css('display','')
+          $('.product').remove()
+           axios.get('http://localhost:3000/api/products')
+              alert('Було успішно оновлено')
+.then(res => {
+   for(let el of res.data){
+       $('.redactContainer').append(`
+       <div class="product">
+       <div class="productImage"></div>
+       <p>${el.name}</p>
+       <p>${el.price}</p>
+       <p>${el.category}</p>
+       <div class="confirm"> <button class="edit" id="${el._id}">edit</button> <button class="delete" id="${el._id}">delete</button></div>
+       </div>
+       `)
+       
+   }
 })
+
+    })
+    .catch(err => console.error(err));
+});
