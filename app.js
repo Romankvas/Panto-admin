@@ -60,14 +60,6 @@ app.get('/all-products', async (req, res) => {
     const products = await Product.find().sort({ createdAt: -1 });
     res.json(products);
 });
-app.get('/product/:id', async (req, res) => {     
-    try { 
-        const product = await Product.findById(req.params.id); 
-        res.json(product); 
-    } catch (err) { 
-        res.status(500).json({ error: err.message }); 
-    } 
-})
 
 
 app.post('/create-product', upload.single('image'), async (req, res) => {
